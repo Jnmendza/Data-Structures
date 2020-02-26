@@ -140,8 +140,13 @@ class DoublyLinkedList:
     def get_max(self):
         # Plan:
 
-        # Max max var
+        # Make max var
+        item = max = self.head
         # Loop through nodes via node.next
-        # If node.value is higher, update max
+        while item:
+            # If node.value is higher, update max
+            if item.value > max.value:
+                max = item
+            item = item.next
         # return max
-        pass
+        return max.value
