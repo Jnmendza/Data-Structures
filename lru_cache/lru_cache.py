@@ -1,3 +1,8 @@
+from doubly_linked_list import DoublyLinkedList
+import sys
+sys.path.append('../doubly_linked_list')
+
+
 class LRUCache:
     """
     Our LRUCache class keeps track of the max number of nodes it
@@ -7,7 +12,10 @@ class LRUCache:
     to every node stored in the cache.
     """
     def __init__(self, limit=10):
-        pass
+        self.limit = limit
+        self.size = 0
+        self.order = DoublyLinkedList()
+        self.storage = dict()
 
     """
     Retrieves the value associated with the given key. Also
@@ -17,7 +25,24 @@ class LRUCache:
     key-value pair doesn't exist in the cache.
     """
     def get(self, key):
-        pass
+        # If item with key exists
+        # if key in self.storage:
+        #     # return the value and move it to MRU
+        #     self.order.move_to_end(self.storage[key])
+        #     return self.storage[key].value[1]
+        # # Else return None
+        # return None
+
+        # Key is not in cache - return none
+        if key not in self.storage:
+            return None
+        else:
+            # Key is in cache
+            # move it to most recently used
+            node = self.storage.[key]
+            self.order.move_to_end(node)
+            # return value
+            return node.value[1]
 
     """
     Adds the given key-value pair to the cache. The newly-
@@ -30,4 +55,41 @@ class LRUCache:
     the newly-specified value.
     """
     def set(self, key, value):
-        pass
+        # check if the key exists
+        # if key in self.storage:
+        #     node = self.storage[key]
+        #     node.value = (key, value)
+        #     return self.order.move_to_end(node)
+        # elif self.size == self.limit:
+        #     del self.storage[self.order.head.value[0]]
+        #     self.order.remove_from_head()
+        #     # decrease the size of list
+        #     self.size -= 1
+        # # continue with inserting new item and adding item to head
+        # self.order.add_to_tail((key, value))
+        # # store item in dict with key
+        # self.storage[key] = self.order.tail
+        # self.size += 1
+
+        # if item/key already exists
+        if key in self.storage:
+            # overwrite the value
+            # where is the value stored?
+            node = self.storage[key]
+            node.value = (key, value)
+            # move to the tail (most recently used)
+            self.order.move_to_end(node)
+            return
+
+        # size is at limit
+        if len(self.order) == self.limit:
+            # evict the oldest one
+            index_of_oldest = self.order.head.value[0]
+            del self.storage[index_of_oldest]
+            self.order.remove_from_head()
+
+            # add to order
+            self.order.add_to_tail((key, value))
+
+            # add it to storage
+            self.storage[key] = self.order.tail
